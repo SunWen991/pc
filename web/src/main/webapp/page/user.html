@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="keywords" content="jquery,ui,easy,easyui,web">
+		<meta name="description" content="easyui help you build your web page easily!">
+		<title>Build CRUD DataGrid with jQuery EasyUI - jQuery EasyUI Demo</title>
+		<link rel="stylesheet" type="text/css" href="http://www.w3cschool.cc/try/jeasyui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="http://www.w3cschool.cc/try/jeasyui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="http://www.w3cschool.cc/try/jeasyui/demo/demo.css">
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+		<script type="text/javascript" src="http://www.w3cschool.cc/try/jeasyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="http://www.w3cschool.cc/try/jeasyui/jquery.edatagrid.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('#dg').edatagrid({
+					url: '/web_war/userMsg/listAll',
+					saveUrl: 'save_user.php',
+					updateUrl: 'update_user.php',
+					destroyUrl: 'destroy_user.php'
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+
+		<div class="demo-info" style="margin-bottom:10px">
+			<div class="demo-tip icon-tip">&nbsp;</div>
+			<div>微博用户</div>
+		</div>
+
+		<table id="dg" title="My DataGrid" style="width:inherit;height:inherit" toolbar="#toolbar" pagination="true" idField="id" rownumbers="true" fitColumns="true" singleSelect="true">
+			<thead>
+				<tr>
+					<th field="userName" width="50" editor="{type:'validatebox',options:{required:true}}">用户</th>
+					<th field="sex" width="50" editor="{type:'validatebox',options:{required:true}}">性别</th>
+					<th field="district" width="50" editor="{type:'validatebox',options:{required:true}}">地区</th>
+					<th field="createTime" width="50" editor="{type:'validatebox',options:{required:true}}">创建时间</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="toolbar">
+			<!--<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">New</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">Destroy</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">抓取数据</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" oncick="javascript:$('#dg').edatagrid('cancelRow')">Cancel</a>-->
+
+		</div>
+
+	</body>
+
+</html>

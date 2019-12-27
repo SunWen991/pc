@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="backstage.Keyword">
+	<!-- Result Map-->
+	<resultMap id="keyword_result_map" type="keyword">
+		<result property="kwId" column="kw_id" />
+		<result property="word" column="word" />
+		<result property="url" column="url" />
+	</resultMap>
+
+	<!-- 表中所有列 -->
+	<sql id="keyword_columns">
+		keyword.*
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="keyword_where_clause">
+		<where>
+			<if test="kwId != 0"> and kw_ID=#{kwId} </if>
+			<if test="word != null"> and word=#{word} </if>
+			<if test="url != null"> and url=#{url} </if>
+			<if test="paramMap != null and paramMap.exclude==null and paramMap.roleId != null">
+				rm_keyword.keyword_id in (select rm_keyword_role.keyword_id from
+				rm_keyword_role where
+				rm_keyword_role.role_id=#{paramMap.roleId})
+			</if>
+			<if test="paramMap != null and paramMap.exclude!=null and paramMap.roleId != null">
+				and rm_keyword.keyword_id not in
+				(select rm_keyword_role.keyword_id from
+				rm_keyword_role where
+				rm_keyword_role.role_id=#{paramMap.roleId})</if>
+			<if test="paramMap != null and paramMap.exclude!=null and paramMap.staffId != null">
+				and rm_keyword.keyword_id in
+				(select keyword_id from rm_keyword where
+				staff_id=#{paramMap.staffId} or
+				staff_id is null or
+				staff_id = '')
+			</if>
+			<if test="paramMap != null and paramMap.exclude==null and paramMap.staffId != null">
+				and rm_keyword.keyword_id in
+				(select keyword_id from rm_keyword where
+				staff_id=#{paramMap.staffId})
+			</if>
+			and del_flag = '0'
+		</where>
+	</sql>
+	
+	<!-- 判断用户是否存在 -->
+	<select id="keywordExistCheck" parameterType="keyword" resultType="int">
+		select
+			count(1)
+		from 
+			rm_keyword
+		where
+			keyword_name=#{keywordName}
+	</select>
+	
+	<!-- 新增账户信息 -->
+	<insert id="save" parameterType="keyword">
+		insert into
+		keyword
+		(
+		word,
+		url
+		)
+		values
+		(
+		#{word,jdbcType=VARCHAR},
+		#{url,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 修改用户信息 -->
+	<update id="update" parameterType="keyword">
+		update
+			rm_keyword
+		set
+			keyword_name=#{keywordName,jdbcType=VARCHAR},
+			<if test="pwd != null and pwd != ''"> pwd=#{pwd,jdbcType=VARCHAR}, </if>
+			is_enable=#{isEnable},
+			descri =#{descri,jdbcType=VARCHAR},
+			creator=#{creator,jdbcType=VARCHAR}
+		where
+			keyword_id=#{keywordId}
+	</update>
+	
+	<!-- 修改用户员工信息 -->
+	<update id="updateStaff" parameterType="map">
+		update
+		rm_keyword
+		set
+		staff_id = #{staffId,jdbcType=VARCHAR}
+		where
+		keyword_ID in
+		<foreach collection="ids" index="index" item="keywordId" open="(" separator="," close=")">
+			#{keywordId}
+	    </foreach>
+	</update>
+	
+	<!-- 修改用户员工信息，将未选择的取消分配 -->
+	<update id="updateStaffNull" parameterType="map">
+		update
+		rm_keyword
+		set
+		staff_id = ''
+		where
+		keyword_ID in
+		<foreach collection="ids" index="index" item="keywordId" open="(" separator="," close=")">
+			#{keywordId}
+	    </foreach>
+	</update>
+	
+	<!-- 删除用户信息 -->
+	<delete id="delete" parameterType="string">
+		delete from
+		rm_keyword
+		where
+		keyword_ID=#{keywordId}
+	</delete>
+
+	<!-- 批量删除用户 -->
+	<delete id="batchDelete" parameterType="java.util.List">
+		delete from
+		rm_keyword
+		where
+		keyword_ID
+		in
+		<foreach collection="list" item="keywordId" open="(" separator="," close=")">
+			#{keywordId}
+	    </foreach>
+	</delete>
+
+	<!-- 获取一条用户信息 -->
+	<select id="get" parameterType="string" resultMap="keyword_result_map">
+		select
+			<include refid="keyword_columns" />
+		from
+			rm_keyword
+		where
+			keyword_id=#{keywordId}
+	</select>
+
+	<!-- 根据用户名密码获取一条用户信息 -->
+	<select id="getOne" parameterType="keyword" resultMap="keyword_result_map">
+		select
+		<include refid="keyword_columns" />
+		from
+		keyword
+		where
+		word=#{word} or url=#{url}
+	</select>
+
+	<!-- 获取所有用户数 -->
+	<select id="countAll" resultType="int" parameterType="keyword">
+		select count(1)
+		from keyword
+		where
+		word=#{word} or url=#{url}
+	</select>
+
+	<select id="count" resultType="int" parameterType="keyword">
+		select count(1)
+		from keyword
+		where
+		word=#{word} or url=#{url}
+	</select>
+
+	<!-- 获取用户信息列表 -->
+	<select id="listByPage" parameterType="keyword" resultMap="keyword_result_map">
+		<include refid="global.paginationStart_mysql" />
+		select
+		<include refid="keyword_columns" />
+		from keyword
+		<include refid="keyword_where_clause" />
+		<include refid="global.paginationEnd_mysql" />
+
+	</select>
+	
+	<!-- 根据条件获取用户信息列表 -->
+	<select id="listByModel" parameterType="keyword" resultMap="keyword_result_map">
+		select
+		<include refid="keyword_columns" />
+		from keyword
+		<include refid="keyword_where_clause" />
+	</select>
+
+	<!-- 获取所有用户信息列表 -->
+	<select id="listAll" resultMap="keyword_result_map">
+		select
+		<include refid="keyword_columns" />
+		from keyword order by kw_ID desc
+	</select>
+	
+	<!-- 新增用户角色列表 -->
+	<insert id="batchSaveLink" parameterType="java.util.List">
+		insert into
+		rm_keyword_role
+		(
+		keyword_ID,
+		ROLE_ID
+		)
+		<foreach collection="list" item="item" separator="union all">
+			select
+			#{item.keywordId},
+			#{item.roleId}
+			from dual
+		</foreach>
+	</insert>
+	<!-- 删除用户角色信息 -->
+	<delete id="batchDeleteLink" parameterType="HashMap">
+		delete from
+		rm_keyword_role
+		where
+		keyword_ID =#{keywordId}
+		and role_Id in
+		<foreach collection="roleIds" item="roleId" open="("
+			separator="," close=")">
+			#{roleId}
+	    </foreach>
+	</delete>
+	
+	<!-- 软删 -->
+	<update id="softDelete" parameterType="string">
+		update
+		rm_keyword
+		set del_flag='1'
+		where
+		keyword_ID=#{keywordId}
+	</update>
+	
+	<!-- 批量软删 -->
+	<update id="batchSoftDelete" parameterType="java.util.List">
+		update
+		rm_keyword
+		set del_flag='1'
+		where
+		keyword_ID
+		in
+		<foreach collection="list" item="keywordId" open="(" separator="," close=")">
+			#{keywordId}
+	    </foreach>
+	</update>
+	
+	<!-- 获取用户信息 -->
+	<select id="getkeywordByModel" parameterType="keyword" resultMap="keyword_result_map">
+		select u.*
+		from rm_keyword_role ur, rm_keyword u
+		where ur.keyword_id = u.keyword_id
+		and ur.role_id = #{paramMap.roleId}
+		and u.del_flag = '0'
+	</select>
+	
+	<!--分配仓库权限 -->
+	<update id="doAllocateWarehouse" parameterType="keyword">
+		update
+			rm_keyword
+		set
+			warehouse_ids=#{warehouseIds}
+		where
+			keyword_id=#{keywordId}
+	</update>
+	
+	<!--分配应用权限 -->
+	<update id="doAllocateApp" parameterType="keyword">
+		update
+			rm_keyword
+		set
+			app_ids=#{appIds}
+		where
+			keyword_id=#{keywordId}
+	</update>
+</mapper>

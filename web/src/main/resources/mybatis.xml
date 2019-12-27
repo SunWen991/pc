@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- Mybatis设置 -->
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="aggressiveLazyLoading" value="false" />
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="useColumnLabel" value="true" />
+		<setting name="useGeneratedKeys" value="false" />
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultStatementTimeout" value="25000" />
+	</settings>
+	
+	<!-- 定义别名 -->
+	<typeAliases>
+		<!-- 为传入参数的前后都加上%，执行模糊查询 -->
+		<typeAlias alias="tluser" type="com.heidian.backstage.domain.User"/>
+		<typeAlias alias="keyword" type="com.heidian.backstage.domain.Keyword"/>
+		<typeAlias alias="text" type="com.heidian.backstage.domain.Text"/>
+		<typeAlias alias="user" type="com.heidian.backstage.domain.User"/>
+	</typeAliases>
+
+	<!-- 定义映射文件 -->
+	<mappers>
+		<mapper resource="mapper/pc/global.xml"/>
+		<mapper resource="mapper/pc/kw.xml"/>
+		<mapper resource="mapper/pc/text.xml"/>
+		<mapper resource="mapper/pc/user.xml"/>
+	</mappers>
+</configuration>

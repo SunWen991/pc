@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="keywords" content="jquery,ui,easy,easyui,web">
+		<meta name="description" content="easyui help you build your web page easily!">
+		<title>Build CRUD DataGrid with jQuery EasyUI - jQuery EasyUI Demo</title>
+		<link rel="stylesheet" type="text/css" href="http://www.w3cschool.cc/try/jeasyui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="http://www.w3cschool.cc/try/jeasyui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="http://www.w3cschool.cc/try/jeasyui/demo/demo.css">
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+		<script type="text/javascript" src="http://www.w3cschool.cc/try/jeasyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="http://www.w3cschool.cc/try/jeasyui/jquery.edatagrid.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('#dg').edatagrid({
+					url: '/web_war/text/listByPage',
+					saveUrl: 'save_user.php',
+					updateUrl: 'update_user.php',
+					destroyUrl: 'destroy_user.php'
+				});
+			});
+
+			function doSearch() {
+				$('#dg').datagrid('load', {
+					author: $('#author').val(),
+					content: $('#content').val()
+				});
+			}
+		</script>
+	</head>
+
+	<body>
+
+		<div class="demo-info" style="margin-bottom:10px">
+			<div class="demo-tip icon-tip">&nbsp;</div>
+			<div>微博数据</div>
+		</div>
+
+		<table id="dg" title="My DataGrid" style="width:inherit;height:inherit" toolbar="#toolbar" pagination="true" idField="id" rownumbers="true" fitColumns="true" singleSelect="true">
+			<thead>
+				<tr>
+					<th field="author" width="50" editor="{type:'validatebox',options:{required:true}}">作者</th>
+					<th field="content" width="50" editor="{type:'validatebox',options:{required:true}}"> 内容</th>
+					<th field="commentCount" width="50" editor="{type:'validatebox',options:{required:true}}"> 评价数</th>
+					<!--<th field="url" width="50" editor="text">Phone</th>
+				<th field="email" width="50" editor="{type:'validatebox',options:{validType:'email'}}">Email</th>-->
+				</tr>
+			</thead>
+		</table>
+		<div id="toolbar">
+			<!--<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg').edatagrid('addRow')">New</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg').edatagrid('destroyRow')">Destroy</a>-->
+			<!--<a href="/web_war/text/pc" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg').edatagrid('saveRow')">抓取数据</a>-->
+			<span>作者:</span>
+			<input id="author" style="line-height:26px;border:1px solid #ccc">
+			<span>内容:</span>
+			<input id="content" style="line-height:26px;border:1px solid #ccc">
+			<a href="#" class="easyui-linkbutton" plain="true" onclick="doSearch()">Search</a>
+
+		</div>
+
+	</body>
+
+</html>

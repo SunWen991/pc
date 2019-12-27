@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="backstage.Text">
+
+	<!-- Result Map-->
+	<resultMap id="text_result_map" type="Text">
+		<result property="txId" column="tx_id" />
+		<result property="author" column="author" />
+		<result property="content" column="content" />
+		<result property="commentCount" column="comment_count" />
+		<result property="type" column="type" />
+		<!--<result property="del_flag" column="del_flag" />-->
+	</resultMap>
+
+	<!-- 表中所有列 -->
+	<sql id="text_columns">
+			text.*
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="text_where_clause">
+		<where>
+			<if test="txId != 0"> and tx_id=#{txId}</if>
+			<if test="author != null and author != ''"> and author like '%${author}%'</if>
+			<if test="content != null and content != ''"> and content like '%${content}%'</if>
+			<if test="type != 0">and type=#{type}</if>
+		</where>
+	</sql>
+
+	<!-- 新增员工信息 -->
+	<insert id="save" parameterType="text">
+		insert into
+		text
+		(
+			author,
+			content,
+			comment_count,
+			type
+		)
+		values
+		(
+			#{author,jdbcType=VARCHAR},
+			#{content,jdbcType=VARCHAR},
+			#{commentCount,jdbcType=VARCHAR},
+			#{type,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 修改员工信息 -->
+	<update id="update" parameterType="text">
+		update
+			in_text
+		set
+			tx_id=#{author,jdbcType=VARCHAR},
+			author=#{content,jdbcType=VARCHAR},
+			contentt=#{textDatetime,jdbcType=VARCHAR},
+			type=#{Type,jdbcType=VARCHAR},
+			descri=#{descri,jdbcType=VARCHAR}
+		where
+			re_id=#{txId}
+	</update>
+
+	<!-- 删除员工信息 -->
+	<!--<delete id="delete" parameterType="string">
+		delete from
+		rm_text
+		where
+		re_id=#{txId}
+	</delete>-->
+
+	<!-- 批量删除员工 -->
+	<!--<delete id="batchDelete" parameterType="java.util.List">
+		delete from
+		rm_text
+		where
+		re_id
+		in
+		<foreach collection="list" item="txId" open="(" separator="," close=")">
+			#{txId}
+	    </foreach>
+	</delete>-->
+	
+	<!-- 软删除员工信息 -->
+	<!--<update id="softDelete" parameterType="string">
+		update
+		rm_text
+		set
+		del_flag='1'
+		where
+		re_id=#{txId}
+	</update>-->
+
+	<!-- 批量软删除员工 -->
+	<!--<update id="batchSoftDelete" parameterType="java.util.List">
+		update
+		rm_text
+			set del_flag='1',
+			modify_time = current_timestamp()
+		where
+			re_id in
+			<foreach collection="list" item="txId" open="(" separator="," close=")">
+				#{txId}
+		    </foreach>
+	</update>-->
+	
+	<!-- 启用 -->
+	<!--<update id="enable" parameterType="java.util.List">
+		update
+		rm_text
+			set del_flag= 0,
+			modify_time = current_timestamp()
+		where
+			re_id in
+			<foreach collection="list" item="txId" open="(" separator="," close=")">
+				#{txId}
+		    </foreach>
+	</update>-->
+
+	<!-- 获取一条员工信息 -->
+	<!--<select id="get" parameterType="string" resultMap="text_result_map">
+		select
+		<include refid="text_columns" />
+		from
+		rm_text
+		where
+		re_id=#{txId} and del_flag='0'
+	</select>-->
+
+	<!-- 获取所有员工数 -->
+	<select id="countAll" resultType="int">
+		select
+		count(1)
+		from
+		text
+		<include refid="text_where_clause" />
+	</select>
+
+	<!-- 获取员工信息列表 -->
+	<select id="listByPage" parameterType="text" resultMap="text_result_map">
+
+		select
+		<include refid="text_columns" />
+		from
+		text
+		<include refid="text_where_clause" />
+		order by comment_count desc limit #{start}, #{rows}
+	</select>
+
+	<!-- 获取所有员工信息列表 -->
+	<select id="listAll" resultMap="text_result_map">
+		select
+		<include refid="text_columns" />
+		from text
+		where del_flag='0'
+	</select>
+
+	<select id="listByModel" parameterType="text" resultMap="text_result_map">
+		select
+		<include refid="text_columns" />
+		from text
+		<include refid="text_where_clause" />
+	</select>
+</mapper>

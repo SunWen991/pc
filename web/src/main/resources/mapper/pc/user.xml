@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="backstage.User">
+
+	<!-- Result Map-->
+	<resultMap id="user_result_map" type="user">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="district" column="district" />
+		<result property="sex" column="sex" />
+		<result property="createTime" column="create_time" />
+	</resultMap>
+
+	<!-- 表中所有列 -->
+	<sql id="user_columns">
+			user.*
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="user_where_clause">
+		<where>
+			<if test="userId != 0"> and user_id=#{userId}</if>
+			<if test="userId != 0"> and user_id =#{userId}</if>
+			<if test="userName != 0"> and user_name =#{userName}</if>
+			<if test="district != null and district != ''"> and  district=#{district}</if>
+			<if test="sex != 0">and sex=#{sex}</if>
+			<if test="createTime != null and createTime != ''"> and  createTime=#{createTime}</if>
+		</where>
+	</sql>
+
+	<!-- 新增员工信息 -->
+	<insert id="save" parameterType="user">
+		insert into
+		user
+		(
+
+			user_name,
+			district,
+			sex,
+			create_time
+		)
+		values
+		(
+			#{userName,jdbcType=VARCHAR},
+			#{district,jdbcType=VARCHAR},
+			#{sex,jdbcType=VARCHAR},
+			#{createTime,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 修改员工信息 -->
+	<update id="update" parameterType="user">
+		update
+			user
+		set
+			user_id=#{userId,jdbcType=VARCHAR},
+			user_name=#{userName,jdbcType=VARCHAR},
+			district=#{district,jdbcType=VARCHAR},
+			sex=#{sex,jdbcType=VARCHAR},
+			createTime=#{createTime,jdbcType=VARCHAR}
+		where
+			user_id=#{userId}
+	</update>
+
+	<!-- 删除员工信息 -->
+	<!--<delete id="delete" parameterType="string">
+		delete from
+		rm_user
+		where
+		user_id=#{userId}
+	</delete>-->
+
+	<!-- 批量删除员工 -->
+	<!--<delete id="batchDelete" parameterType="java.util.List">
+		delete from
+		rm_user
+		where
+		user_id
+		in
+		<foreach collection="list" item="userId" open="(" separator="," close=")">
+			#{userId}
+	    </foreach>
+	</delete>-->
+	
+	<!-- 软删除员工信息 -->
+	<!--<update id="softDelete" parameterType="string">
+		update
+		rm_user
+		set
+		del_flag='1'
+		where
+		user_id=#{userId}
+	</update>-->
+
+	<!-- 批量软删除员工 -->
+	<!--<update id="batchSoftDelete" parameterType="java.util.List">
+		update
+		rm_user
+			set del_flag='1',
+			modify_time = current_timestamp()
+		where
+			user_id in
+			<foreach collection="list" item="userId" open="(" separator="," close=")">
+				#{userId}
+		    </foreach>
+	</update>-->
+	
+	<!-- 启用 -->
+	<!--<update id="enable" parameterType="java.util.List">
+		update
+		rm_user
+			set del_flag= 0,
+			modify_time = current_timestamp()
+		where
+			user_id in
+			<foreach collection="list" item="userId" open="(" separator="," close=")">
+				#{userId}
+		    </foreach>
+	</update>-->
+
+	<!-- 获取一条员工信息 -->
+	<!--<select id="get" parameterType="string" resultMap="user_result_map">
+		select
+		<include refid="user_columns" />
+		from
+		rm_user
+		where
+		user_id=#{userId} and del_flag='0'
+	</select>-->
+
+	<select id="getCity" parameterType="int" resultMap="user_result_map">
+		select
+		district
+		from
+		city
+		where
+		city_id=#{cityId}
+	</select>
+
+	<!-- 获取所有员工数 -->
+	<!--<select id="countAll" resultType="int">
+		select
+		count(1)
+		from
+		rm_user
+		<include refid="user_where_clause" />
+	</select>-->
+
+	<!-- 获取员工信息列表 -->
+	<select id="listByPage" parameterType="user" resultMap="user_result_map">
+		<include refid="global.paginationStart_mysql" />
+		select
+		<include refid="user_columns" />
+		from
+		user
+		<include refid="user_where_clause" />
+		<include refid="global.paginationEnd_mysql" />
+	</select>
+
+	<!-- 获取所有员工信息列表 -->
+	<select id="listAll" resultMap="user_result_map">
+		select
+		<include refid="user_columns" />
+		from user
+	</select>
+
+	<!--<select id="getuserByModel" parameterType="user" resultMap="user_result_map">
+		select
+		<include refid="user_columns" />
+		from rm_user
+		where del_flag='0' 
+		<if test="orgId != null and orgId != ''">
+			and org_id=#{orgId}
+		</if>
+	</select>-->
+</mapper>
