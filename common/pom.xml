@@ -21,7 +21,7 @@
         <slf4j.version>1.7.2</slf4j.version>
         <log4j.version>1.2.16</log4j.version>
         <!-- CXF版本号 -->
-        <cxf.version>2.7.3</cxf.version>
+        <cxf.version>2.7.4</cxf.version>
     </properties>
     <dependencies>
 
